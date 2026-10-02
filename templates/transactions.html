@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Transaction History - SELEMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        html, body { background-color: #000000 !important; color: #ffffff !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card { background-color: #0f172a !important; border: 1px solid #1e293b !important; color: #ffffff !important; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
+        .table { color: #ffffff !important; background-color: transparent !important; }
+        .table-light th { background-color: #1e293b !important; color: #ffffff !important; border-color: #334155 !important; }
+        .table>:not(caption)>*>* { background-color: transparent !important; color: #ffffff !important; border-bottom-color: #1e293b !important; }
+        .table-hover tbody tr:hover { background-color: #1e293b !important; }
+    </style>
+</head>
+<body class="py-4 text-white">
+    <div class="container" style="max-width: 1100px;">
+        
+        <!-- Global Navigation Bar -->
+        <nav class="navbar navbar-expand-lg navbar-dark border border-secondary mb-4 px-4 rounded-4" style="background-color: #0f172a !important;">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold text-white" href="{{ url_for('index') }}">
+                    <i class="fa-solid fa-microchip me-2 text-info"></i>SELEMS
+                </a>
+                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link text-light" href="{{ url_for('index') }}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link text-light" href="{{ url_for('equipment_list') }}">Inventory</a></li>
+                        <li class="nav-item"><a class="nav-link text-white active fw-semibold" href="{{ url_for('transaction_history') }}">Transactions</a></li>
+                    </ul>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="text-secondary small"><i class="fa-solid fa-user-circle me-1"></i> {{ session.get('username', 'User') }}</span>
+                        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-danger px-3">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Header Section -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-white mb-1">Equipment Transaction History</h2>
+                <p class="text-secondary small mb-0">Audit logs of all issued and returned laboratory hardware items.</p>
+            </div>
+        </div>
+
+        <!-- Transactions Table Card -->
+        <div class="card p-4 rounded-4">
+            <div class="table-responsive">
+                <table class="table align-middle table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Equipment</th>
+                            <th>Borrower</th>
+                            <th>Issue Date</th>
+                            <th>Return Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tx in transactions %}
+                        <tr>
+                            <td>#{{ tx.id }}</td>
+                            <td class="fw-semibold">{{ tx.equipment.name }}</td>
+                            <td>{{ tx.borrower_name }}</td>
+                            <td>{{ tx.issue_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                {% if tx.return_date %}
+                                    {{ tx.return_date.strftime('%Y-%m-%d %H:%M') }}
+                                {% else %}
+                                    <span class="text-secondary">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if tx.status == 'Issued' %}
+                                    <span class="badge bg-warning text-dark px-3 py-2">Issued</span>
+                                {% else %}
+                                    <span class="badge bg-success px-3 py-2">Returned</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if tx.status == 'Issued' %}
+                                    <a href="{{ url_for('return_equipment', transaction_id=tx.id) }}" class="btn btn-sm btn-outline-success">Mark Returned</a>
+                                {% else %}
+                                    <span class="text-secondary small">Completed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center text-secondary py-4">No transaction records found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

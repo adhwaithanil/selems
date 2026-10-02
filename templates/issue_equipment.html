@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Issue Equipment - SELEMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        html, body { 
+            background-color: #000000 !important; 
+            color: #ffffff !important; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+        .card { 
+            background-color: #0f172a !important; 
+            border: 1px solid #1e293b !important; 
+            color: #ffffff !important; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); 
+        }
+        .form-control { 
+            background-color: #020617 !important; 
+            border: 1px solid #334155 !important; 
+            color: #ffffff !important; 
+        }
+        .form-control:focus { 
+            background-color: #020617 !important; 
+            border-color: #64748b !important; 
+            color: #ffffff !important; 
+            box-shadow: 0 0 0 0.25rem rgba(100, 116, 139, 0.25); 
+        }
+        .form-control::placeholder { 
+            color: #64748b !important; 
+        }
+    </style>
+</head>
+<body class="py-5 text-white">
+    <div class="container" style="max-width: 600px;">
+        <div class="card p-4 rounded-4">
+            <h3 class="mb-3 fw-bold text-white">Issue Equipment</h3>
+            <p class="text-secondary mb-4">
+                Issuing item: <strong class="text-white">{{ equipment.name }}</strong> 
+                <span class="badge bg-secondary ms-2">Available: {{ equipment.available_quantity }}/{{ equipment.total_quantity }}</span>
+            </p>
+            
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="borrower_name" class="form-label fw-semibold text-secondary">Borrower Name / Student ID</label>
+                    <input type="text" class="form-control" id="borrower_name" name="borrower_name" placeholder="Enter student or staff name" required>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ url_for('equipment_list') }}" class="btn btn-outline-light px-4">Cancel</a>
+                    <button type="submit" class="btn btn-light px-4 fw-semibold">Confirm Issue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
